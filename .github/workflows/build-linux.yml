@@ -7,44 +7,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: checkout code
         uses: actions/checkout@v7
 
-      - name: Install dependencies
+      - name: install dependencies
         run: |
           sudo apt update
-          sudo apt install -y \
-            build-essential \
-            cmake \
-            g++ \
-            libgtk-4-dev \
-            libadwaita-1-dev \
-            libfontconfig1-dev \
-            libsoup-3.0-dev \
-            libcurl4-openssl-dev \
-            libjson-glib-dev \
-            libglib2.0-dev-bin \
-            blueprint-compiler
+          sudo apt install libgtk-4-dev libadwaita-1-dev libfontconfig-dev \
+          libsoup-3.0-dev libcurl4-openssl-dev libjson-glib-dev cmake g++ \
+          blueprint-compiler libglib2.0-dev-bin
 
-      - name: Configure
+      - name: build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release .
+          cmake --build build --parallel $(nproc)
 
-      - name: Build
-        run: |
-          cmake --build build --parallel $(nproc) --verbose
-
-      - name: Debug output
-        run: |
-          echo "=== build directory ==="
-          ls -R build || true
-          echo "=== find binaries ==="
-          find build -type f -executable || true
-
-      - name: Upload artifact
+      - name: upload release
         uses: actions/upload-artifact@v7
         with:
-          name: PCL-CGRE-linux
-          path: build/**
+          name: PCL-CGRE
+          path: |
+            ./build/pcl-cgre
