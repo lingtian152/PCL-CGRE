@@ -33,8 +33,8 @@ compile_commands.json
 *.pch
 
 # GResource
-*.gresource
-*.gresource.xml
+build/**/*.gresource
+build/**/*.gresource.xml
 
 # AppImage artifacts
 *.AppImage
@@ -55,7 +55,7 @@ __pycache__/
 *$py.class
 
 # Core dumps / crash logs
-core
+/core
 *.core
 
 # OS
