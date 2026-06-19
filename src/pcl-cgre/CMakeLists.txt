@@ -43,6 +43,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E env python3
         ${CMAKE_SOURCE_DIR}/scripts/gen_gresource_xml.py
         ${CMAKE_SOURCE_DIR}
+        ${UI_DEST_DIR}
         > ${GRESOURCE_XML}
     DEPENDS
         ${CMAKE_SOURCE_DIR}/scripts/gen_gresource_xml.py
@@ -55,6 +56,7 @@ add_custom_command(
     COMMAND ${GLIB_COMPILE_RESOURCES}
         --target=${GRESOURCE_FILE}
         --sourcedir=${CMAKE_SOURCE_DIR}
+        --sourcedir=${CMAKE_BINARY_DIR}
         ${GRESOURCE_XML}
     DEPENDS ${GRESOURCE_XML}
     COMMENT "Compiling GResource binary (.gresource)"
