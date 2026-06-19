@@ -1,0 +1,42 @@
+name: build-windows
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v7
+
+      - name: setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gtk4
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-fontconfig
+            mingw-w64-ucrt-x86_64-libsoup3
+            mingw-w64-ucrt-x86_64-curl
+            mingw-w64-ucrt-x86_64-json-glib
+            mingw-w64-ucrt-x86_64-nlohmann-json
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-blueprint-compiler
+
+      - name: build
+        run: |
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release .
+          cmake --build build --parallel $(nproc)
+
+      - name: upload release
+        uses: actions/upload-artifact@v7
+        with:
+          name: PCL-CGRE-windows
+          path: build/pcl-cgre.exe
