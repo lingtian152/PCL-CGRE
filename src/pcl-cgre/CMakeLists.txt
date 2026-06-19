@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 # ── pcl-cgre GUI — GTK4 + libadwaita 前端 ──────────────────────────────────
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 # Collect GUI sources
 file(GLOB_RECURSE GUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
