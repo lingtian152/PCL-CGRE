@@ -9,7 +9,9 @@
 #include <string>
 #include <vector>
 
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(_WIN32)
+#include <io.h>
+#elif defined(__linux__) && !defined(__ANDROID__)
 #include <limits.h>
 #include <unistd.h>
 #endif
@@ -64,7 +66,11 @@ time_t parse_iso8601(const char* str)
     tm.tm_mon -= 1;
     tm.tm_isdst = -1;
 
+#if defined(_WIN32)
+    time_t t = _mkgmtime(&tm);
+#else
     time_t t = timegm(&tm);
+#endif
     if (n >= 7) {
         int offset = tz_h * 3600 + tz_m * 60;
         if (tz_sign == '-') offset = -offset;
@@ -270,7 +276,11 @@ std::string resolve_binary_dir()
 /** Check if a regular file exists at `path`. */
 static bool file_exists(const std::string& path)
 {
+#if defined(_WIN32)
+    return _access(path.c_str(), 0) == 0;
+#else
     return access(path.c_str(), F_OK) == 0;
+#endif
 }
 
 /** Find lirpa_loof.json using the same strategy as IconHelper. */

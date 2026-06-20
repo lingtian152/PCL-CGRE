@@ -8,7 +8,8 @@ UI_DIR = os.path.abspath(sys.argv[2]) if len(sys.argv) > 2 else os.path.join(ROO
 
 # Collect all resource files relative to ROOT
 files = []
-for dirpath, _, filenames in os.walk(ROOT):
+for dirpath, dirs, filenames in os.walk(ROOT):
+    dirs.sort()
     for f in sorted(filenames):
         full = os.path.join(dirpath, f)
         rel = os.path.relpath(full, ROOT)
@@ -42,7 +43,7 @@ print('<gresources>')
 print('  <gresource prefix="/pcl/cgre">')
 for full, alias in sorted(files, key=lambda x: x[1]):
     alias_esc = saxutils.escape(alias)
-    full_esc = saxutils.escape(full)
-    print(f'    <file alias="{alias_esc}">{full_esc}</file>')
+    src = saxutils.escape(os.path.relpath(full, ROOT).replace(os.sep, "/"))
+    print(f'    <file alias="{alias_esc}">{src}</file>')
 print('  </gresource>')
 print('</gresources>')

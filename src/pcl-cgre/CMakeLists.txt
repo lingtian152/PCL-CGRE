@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Collect GUI sources
 file(GLOB_RECURSE GUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+list(SORT GUI_SOURCES)
 
 # Find dependencies
 find_package(PkgConfig REQUIRED)
@@ -15,7 +16,15 @@ pkg_check_modules(LIBCURL REQUIRED libcurl)
 # ── Blueprint UI compilation ──────────────────────────────────────────────
 find_program(BLUEPRINT_COMPILER blueprint-compiler REQUIRED)
 
+# On Windows/MSYS2, blueprint-compiler is a Python script without .exe,
+# which can't be invoked directly by cmd.exe/nmake.  Prepend python3.
+if(WIN32 AND NOT BLUEPRINT_COMPILER MATCHES "\\.exe$")
+    find_program(PYTHON3 python3 REQUIRED)
+    set(BLUEPRINT_COMPILER ${PYTHON3} ${BLUEPRINT_COMPILER})
+endif()
+
 file(GLOB BLUEPRINT_FILES ${CMAKE_SOURCE_DIR}/data/ui/*.blp)
+list(SORT BLUEPRINT_FILES)
 set(UI_DEST_DIR ${CMAKE_BINARY_DIR}/data/ui)
 file(MAKE_DIRECTORY ${UI_DEST_DIR})
 
@@ -86,9 +95,11 @@ file(COPY ${FONT_SRC_DIR}/ DESTINATION ${FONT_DEST_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/resources/lirpa_loof.json
      DESTINATION ${CMAKE_BINARY_DIR}/resources/)
 
-# Compile-time fallback for the icon search path (system install)
+# Compile-time fallback for the icon search path
+set(PCL_ICON_THEME_DIR "/usr/share/icons" CACHE STRING
+    "Icon theme directory (compile-time fallback, see IconHelper.cpp)")
 target_compile_definitions(pcl-cgre PRIVATE
-    PCL_ICON_THEME_DIR="${CMAKE_INSTALL_PREFIX}/share/icons"
+    PCL_ICON_THEME_DIR="${PCL_ICON_THEME_DIR}"
 )
 
 target_include_directories(pcl-cgre PRIVATE
@@ -123,9 +134,14 @@ target_link_options(pcl-cgre PRIVATE
     ${LIBADWAITA_LDFLAGS_OTHER}
 )
 
+# Suppress PE timestamp for reproducible builds
+if(WIN32)
+    target_link_options(pcl-cgre PRIVATE
+        -Wl,--no-insert-timestamp
+    )
+endif()
+
 # ── Output naming per build type ───────────────────────────────────────────
 set_target_properties(pcl-cgre PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-    OUTPUT_NAME_RELEASE "pcl-cgre_release"
-    OUTPUT_NAME_DEBUG   "pcl-cgre_debug"
 )

@@ -67,11 +67,11 @@ adwaita-icon-theme (或等价的图标主题)
 ### 快速编译
 
 ```bash
-./scripts/build.sh          # Release
-./scripts/build.sh Debug    # Debug
+./scripts/build.sh              # Release（默认）
+./scripts/build.sh debug        # Release + 分离调试符号
 ```
 
-产物在 `./build/pcl-cgre`，通过 `./build/pcl-cgre` 启动。
+产物在 `./build/pcl-cgre`（`debug` 模式下额外生成 `./build/pcl-cgre.debug`），通过 `./build/pcl-cgre` 启动。
 
 ### AppImage 打包
 
