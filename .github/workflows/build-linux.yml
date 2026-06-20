@@ -29,7 +29,11 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: PCL-CGRE
-          path: |
-            ./build/pcl-cgre_release
-            ./build/pcl-cgre_debug
+          name: pcl-cgre_release
+          path: ./build/pcl-cgre_release
+          
+      - name: upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: pcl-cgre_debug
+          path: ./build/pcl-cgre_debug
