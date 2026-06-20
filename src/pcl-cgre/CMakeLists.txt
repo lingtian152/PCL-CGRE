@@ -123,7 +123,15 @@ target_link_options(pcl-cgre PRIVATE
     ${LIBADWAITA_LDFLAGS_OTHER}
 )
 
-# 输出到 build/ 根目录（兼容旧路径）
-set_target_properties(pcl-cgre PROPERTIES
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(pcl-cgre PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+    set_target_properties(pcl-cgre PROPERTIES OUTPUT_NAME "pcl-cgre-release")
+elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set_target_properties(pcl-cgre PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/Debug
+)
+
+    set_target_properties(pcl-cgre PROPERTIES OUTPUT_NAME "pcl-cgre-debug")
+endif()
