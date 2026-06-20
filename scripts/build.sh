@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BUILD_TYPE="${1:-Release}"
-BUILD_NAME="pcl-cgre${BUILD_TYPE,,}"
+BUILD_NAME="pcl-cgre-${BUILD_TYPE,,}"
 JOBS="${2:-$(nproc)}"
 
 echo "==> 配置 (${BUILD_TYPE})..."

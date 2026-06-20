@@ -127,12 +127,9 @@ set_target_properties(pcl-cgre PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set_target_properties(pcl-cgre PROPERTIES
-        OUTPUT_NAME "pcl-cgre_release"
-    )
-elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set_target_properties(pcl-cgre PROPERTIES
-        OUTPUT_NAME "pcl-cgre_debug"
-    )
-endif()
+set_target_properties(pcl-cgre PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+
+    OUTPUT_NAME_RELEASE "pcl-cgre_release"
+    OUTPUT_NAME_DEBUG   "pcl-cgre_debug"
+)
